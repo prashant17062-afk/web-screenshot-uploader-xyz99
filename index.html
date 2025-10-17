@@ -24,11 +24,6 @@
             max-width: 100%;
             height: auto;
         }
-        footer {
-            margin-top: 20px;
-            font-size: small;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -43,21 +38,19 @@
         <img id="screenshotImage" src="" alt="Uploaded Screenshot">
     </div>
 
-    <footer>
-        MIT License - Copyright (c) [Year] [Your Name]
-    </footer>
+    <p>MIT License - Copyright (c) 2024</p>
 
     <script>
         function uploadScreenshot() {
             const fileInput = document.getElementById('screenshotFile');
+            const imageDisplay = document.getElementById('screenshotImage');
             const file = fileInput.files[0];
 
             if (file) {
                 const reader = new FileReader();
 
                 reader.onload = function(e) {
-                    const screenshotImage = document.getElementById('screenshotImage');
-                    screenshotImage.src = e.target.result;
+                    imageDisplay.src = e.target.result;
                 }
 
                 reader.readAsDataURL(file);
