@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Uploader & Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            display: block;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #e9e9e9;
+            cursor: pointer;
+        }
+        #screenshotPreview {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            display: none; /* Hidden by default, shown by JS */
+        }
+        .preview-label {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #0056b3;
+            display: none; /* Hidden by default, shown by JS */
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8em;
+            color: #777;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        footer p {
+            margin-bottom: 5px;
+        }
+        footer strong {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Screenshot Viewer</h1>
+        <p>This application allows you to upload and display a PNG screenshot directly in your browser. Select a <code>.png</code> file from your local machine to view it below.</p>
+
+        <label for="screenshotUpload">Upload Screenshot (.png only):</label>
+        <input type="file" id="screenshotUpload" accept="image/png">
+
+        <p id="previewLabel" class="preview-label">Screenshot Preview:</p>
+        <img id="screenshotPreview" src="" alt="Uploaded Screenshot Preview">
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Academic Project. All rights reserved.</p>
+        <p>
+            <strong>MIT License</strong><br>
+            Permission is hereby granted, free of charge, to any person obtaining a copy
+            of this software and associated documentation files (the "Software"), to deal
+            in the Software without restriction, including without limitation the rights
+            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+            copies of the Software, and to permit persons to whom the Software is
+            furnished to do so, subject to the following conditions:<br><br>
+            The above copyright notice and this permission notice shall be included in all
+            copies or substantial portions of the Software.<br><br>
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+            SOFTWARE.
+        </p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const screenshotUpload = document.getElementById('screenshotUpload');
+            const screenshotPreview = document.getElementById('screenshotPreview');
+            const previewLabel = document.getElementById('previewLabel');
+
+            screenshotUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+
+                if (file) {
+                    // Check if the file is a PNG image
+                    if (file.type === 'image/png') {
+                        const reader = new FileReader();
+
+                        // When the file is loaded
+                        reader.onload = (e) => {
+                            screenshotPreview.src = e.target.result; // Set the image source to the Data URL
+                            screenshotPreview.style.display = 'block'; // Make the image visible
+                            previewLabel.style.display = 'block'; // Make the label visible
+                        };
+
+                        // Handle potential errors during file reading
+                        reader.onerror = () => {
+                            alert('Failed to read file.');
+                            screenshotPreview.style.display = 'none';
+                            previewLabel.style.display = 'none';
+                            screenshotPreview.src = ''; // Clear source on error
+                        };
+
+                        // Read the file as a Data URL (base64 encoded string)
+                        reader.readAsDataURL(file);
+                    } else {
+                        // If not a PNG, alert the user and reset input/preview
+                        alert('Please upload a .png image file.');
+                        screenshotPreview.style.display = 'none';
+                        previewLabel.style.display = 'none';
+                        screenshotPreview.src = '';
+                        screenshotUpload.value = ''; // Clear the file input for reselection
+                    }
+                } else {
+                    // If no file is selected (e.g., user cancels dialog), hide preview
+                    screenshotPreview.style.display = 'none';
+                    previewLabel.style.display = 'none';
+                    screenshotPreview.src = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
