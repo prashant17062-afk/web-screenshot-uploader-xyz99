@@ -1,70 +1,143 @@
+<!--
+MIT License
+
+Copyright (c) [Year] [Your Name/Institution]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screenshot Uploader</title>
+    <title>Screenshot Uploader & Viewer</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
         }
-        #uploadForm {
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
             margin-bottom: 20px;
         }
-        #screenshotDisplay {
-            max-width: 800px;
-            border: 1px solid #ccc;
+        input[type="file"] {
+            margin-top: 15px;
             padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            width: fit-content;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-        #screenshotImage {
+        #screenshotDisplay {
+            margin-top: 30px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fafafa;
+            border-radius: 5px;
+        }
+        #screenshotDisplay img {
             max-width: 100%;
+            max-height: 500px; /* Limit height for display */
             height: auto;
+            display: block; /* Remove extra space below image */
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
-        footer {
-            margin-top: 20px;
-            font-size: small;
-            text-align: center;
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <h1>Screenshot Uploader</h1>
+    <div class="container">
+        <h1>Screenshot Uploader & Viewer</h1>
+        <p>Upload a PNG screenshot to view it directly in your browser.</p>
 
-    <form id="uploadForm">
-        <input type="file" id="screenshotFile" accept=".png">
-        <button type="button" onclick="uploadScreenshot()">Upload</button>
-    </form>
+        <!-- Input element for file upload, accepting only PNG images -->
+        <input type="file" id="screenshotInput" accept=".png">
 
-    <div id="screenshotDisplay">
-        <img id="screenshotImage" src="" alt="Uploaded Screenshot">
+        <!-- Display area for the uploaded screenshot -->
+        <div id="screenshotDisplay">
+            <p class="placeholder-text">Your uploaded screenshot will appear here.</p>
+        </div>
     </div>
 
-    <footer>
-        MIT License - Copyright (c) [Year] [Your Name]
-    </footer>
-
     <script>
-        function uploadScreenshot() {
-            const fileInput = document.getElementById('screenshotFile');
-            const file = fileInput.files[0];
+        document.addEventListener('DOMContentLoaded', () => {
+            const screenshotInput = document.getElementById('screenshotInput');
+            const screenshotDisplay = document.getElementById('screenshotDisplay');
 
-            if (file) {
-                const reader = new FileReader();
+            // Event listener for when a file is selected
+            screenshotInput.addEventListener('change', (event) => {
+                const file = event.target.files[0]; // Get the first selected file
 
-                reader.onload = function(e) {
-                    const screenshotImage = document.getElementById('screenshotImage');
-                    screenshotImage.src = e.target.result;
+                // Check if a file was selected and if it's a PNG
+                if (file && file.type === 'image/png') {
+                    // FileReader API to read the contents of the file
+                    const reader = new FileReader();
+
+                    // Callback function for when the file reading is complete
+                    reader.onload = (e) => {
+                        // Clear previous content in the display area
+                        screenshotDisplay.innerHTML = '';
+                        
+                        // Create a new Image element
+                        const img = document.createElement('img');
+                        // Set the source of the image to the Data URL (base64 encoded image)
+                        img.src = e.target.result;
+                        // Set alt text for accessibility
+                        img.alt = 'Uploaded Screenshot';
+                        
+                        // Append the image to the display div
+                        screenshotDisplay.appendChild(img);
+                    };
+
+                    // Read the file as a Data URL (base64 encoded string)
+                    reader.readAsDataURL(file);
+                } else {
+                    // Inform the user if no file or an invalid file type was selected
+                    screenshotDisplay.innerHTML = '<p class="placeholder-text" style="color: red;">Please select a valid .png image file.</p>';
                 }
-
-                reader.readAsDataURL(file);
-            } else {
-                alert("Please select a .png file.");
-            }
-        }
+            });
+        });
     </script>
 </body>
 </html>
